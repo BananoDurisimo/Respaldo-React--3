@@ -7,10 +7,12 @@ import Articulos from '../src/features/layout/components/Articulos'
 import Ofertas from '../src/features/layout/components/Ofertas'
 import Micuenta from '../src/features/layout/components/Micuenta'
 import Misfavoritos from '../src/features/layout/components/Misfavoritos'
+import { FavoritosProvider } from "../src/features/layout/hooks/FavoritosContext";
 
 function App() {
   return (
     <>
+    <FavoritosProvider>
       <Header></Header>
       <Routes>
         <Route path="/" element={<Content />} />
@@ -20,6 +22,7 @@ function App() {
         <Route path="/Misfavoritos" element={<Misfavoritos />} />
       </Routes>
       <Footer></Footer>
+    </FavoritosProvider>
       
     </>
   )

@@ -1,52 +1,59 @@
 import React from "react";
-import { AppBar, Toolbar, Typography, Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 
-const Footer = () => {
-  return (
-    <AppBar
-      position="static"
-      elevation={0}
+const Footer = () => (
+  <>
+    <style>{`
+      @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&display=swap');
+    `}</style>
+
+    <Box
+      component="footer"
       sx={{
-        backgroundColor: "#000",
+        background: "rgba(8,8,8,0.82)",
+        backdropFilter: "blur(18px)",
+        WebkitBackdropFilter: "blur(18px)",
+        borderTop: "1px solid rgba(255,255,255,0.07)",
         mt: 6
       }}
     >
-      <Toolbar
+      <Box
         sx={{
-          width: "100%",
+          maxWidth: 1400,
+          mx: "auto",
+          px: { xs: 3, md: 5 },
+          py: 3,
           display: "flex",
-          justifyContent: "center",
-          py: 2
+          flexDirection: "column",
+          alignItems: "center",
+          gap: 1.2
         }}
       >
-        <Box textAlign="center">
-          <Typography
-            sx={{
-              fontFamily: "Montserrat, sans-serif",
-              fontWeight: 300,
-              letterSpacing: "1px",
-              fontSize: "0.9rem",
-              color: "white"
-            }}
-          >
-            © 2026  — Todos los derechos reservados
-          </Typography>
+        <Typography
+          sx={{
+            fontFamily: "'DM Sans', sans-serif",
+            fontSize: "0.78rem",
+            fontWeight: 500,
+            color: "rgba(255,255,255,0.4)",
+            letterSpacing: "0.04em"
+          }}
+        >
+          © 2026 — Todos los derechos reservados
+        </Typography>
 
-          <Typography
-            sx={{
-              fontFamily: "Montserrat, sans-serif",
-              fontWeight: 300,
-              fontSize: "0.75rem",
-              color: "rgba(255,255,255,0.6)",
-              mt: 0.5
-            }}
-          >
-            Diseñado y desarrollado por Vicente Rios
-          </Typography>
-        </Box>
-      </Toolbar>
-    </AppBar>
-  );
-};
+        <Typography
+          sx={{
+            fontFamily: "'DM Sans', sans-serif",
+            fontSize: "0.7rem",
+            color: "rgba(255,255,255,0.2)",
+            letterSpacing: "0.03em"
+          }}
+        >
+          Diseñado y desarrollado por Vicente Rios
+        </Typography>
+      </Box>
+    </Box>
+  </>
+);
 
 export default Footer;
