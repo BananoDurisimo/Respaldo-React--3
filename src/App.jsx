@@ -3,15 +3,18 @@ import '../src/shared/styles/App.css'
 import Content from '../src/features/layout/components/Content'
 import Footer from '../src/features/layout/components/Footer'
 import Header from '../src/features/layout/components/Header'
-import Articulos from '../src/features/layout/components/Articulos'
-import Ofertas from '../src/features/layout/components/Ofertas'
-import Micuenta from '../src/features/layout/components/Micuenta'
-import Misfavoritos from '../src/features/layout/components/Misfavoritos'
-import { FavoritosProvider } from "../src/features/layout/hooks/FavoritosContext";
+import Articulos from '../src/features/articles/components/Articulos'
+import Ofertas from '../src/features/articles/components/Ofertas'
+import Micuenta from './features/auth/components/Micuenta'
+import Misfavoritos from './features/auth/components/Misfavoritos'
+import Carrito from './features/auth/components/Carrito'
+import { FavoritosProvider } from "./features/auth/hooks/FavoritosContext";
+import { CarritoProvider } from "./features/articles/hooks/CarritoContext";
 
 function App() {
   return (
     <>
+    <CarritoProvider>
     <FavoritosProvider>
       <Header></Header>
       <Routes>
@@ -20,10 +23,11 @@ function App() {
         <Route path="/Ofertas" element={<Ofertas />} />
         <Route path="/Micuenta" element={<Micuenta />} />
         <Route path="/Misfavoritos" element={<Misfavoritos />} />
+        <Route path="/Carrito" element={<Carrito />} />
       </Routes>
       <Footer></Footer>
     </FavoritosProvider>
-      
+    </CarritoProvider>
     </>
   )
 }

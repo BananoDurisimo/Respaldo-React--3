@@ -1,139 +1,400 @@
-import React from "react";
-import { AppBar, Toolbar, Typography, IconButton, Box } from "@mui/material";
+import { useState, useEffect } from "react";
+import {
+  AppBar, Toolbar, Typography, IconButton,
+  Box, Badge, Drawer, List, ListItem, ListItemButton, Divider
+} from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
+import CloseIcon from "@mui/icons-material/Close";
 import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
-import { NavLink } from "react-router-dom";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useCarrito } from "../../articles/hooks/CarritoContext";
+import { useFavoritos } from "../../auth/hooks/FavoritosContext";
 
 const navItems = [
   { path: "/",             label: "Inicio"    },
   { path: "/Articulos",    label: "Artículos" },
   { path: "/Ofertas",      label: "Ofertas"   },
   { path: "/Micuenta",     label: "Mi Cuenta" },
-  { path: "/Misfavoritos", label: "Favoritos" }
+  { path: "/Misfavoritos", label: "Favoritos" },
 ];
 
-const Header = () => (
-  <>
-    <style>{`
-      @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500&display=swap');
+const Header = () => {
+  const { totalItems } = useCarrito();
+  const { favoritos } = useFavoritos();
+  const navigate = useNavigate();
+  const [scrolled, setScrolled] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
-      .nav-link {
-        position: relative;
-        text-decoration: none;
-        color: rgba(255,255,255,0.6);
-        font-family: 'DM Sans', sans-serif;
-        font-size: 0.82rem;
-        font-weight: 500;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-        padding: 6px 0;
-        transition: color 0.25s ease;
-      }
-      .nav-link::after {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 0%;
-        height: 1.5px;
-        background: #fff;
-        transition: width 0.3s cubic-bezier(.22,.68,0,1.2);
-      }
-      .nav-link:hover { color: #fff; }
-      .nav-link:hover::after,
-      .nav-link.active::after { width: 100%; }
-      .nav-link.active { color: #fff; }
-    `}</style>
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
-    {/* ── AppBar fijo ── */}
-    <AppBar
-      position="fixed"
-      elevation={0}
-      sx={{
-        background: "rgba(8,8,8,0.82)",
-        backdropFilter: "blur(18px)",
-        WebkitBackdropFilter: "blur(18px)",
-        borderBottom: "1px solid rgba(255,255,255,0.07)",
-        top: 0,
-        zIndex: 1200
-      }}
-    >
-      <Toolbar
+  return (
+    <>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap');
+
+        .nav-link {
+          position: relative;
+          text-decoration: none;
+          color: rgba(255,255,255,0.55);
+          font-family: 'DM Sans', sans-serif;
+          font-size: 0.8rem;
+          font-weight: 500;
+          letter-spacing: 0.09em;
+          text-transform: uppercase;
+          padding: 6px 0;
+          transition: color 0.25s ease;
+          white-space: nowrap;
+        }
+        .nav-link::after {
+          content: '';
+          position: absolute;
+          bottom: -1px;
+          left: 0;
+          width: 0%;
+          height: 1.5px;
+          background: linear-gradient(90deg, #fff, rgba(255,255,255,0.4));
+          border-radius: 2px;
+          transition: width 0.32s cubic-bezier(.22,.68,0,1.2);
+        }
+        .nav-link:hover { color: #fff; }
+        .nav-link:hover::after,
+        .nav-link.active::after { width: 100%; }
+        .nav-link.active { color: #fff; }
+
+        .mobile-link {
+          text-decoration: none;
+          color: rgba(255,255,255,0.7);
+          font-family: 'DM Sans', sans-serif;
+          font-size: 1rem;
+          font-weight: 500;
+          letter-spacing: 0.05em;
+          text-transform: uppercase;
+          display: block;
+          transition: color 0.2s ease;
+        }
+        .mobile-link:hover,
+        .mobile-link.active { color: #fff; }
+
+        @keyframes favBadgePop {
+          0%   { transform: scale(0.4); opacity: 0; }
+          60%  { transform: scale(1.25); opacity: 1; }
+          100% { transform: scale(1);   opacity: 1; }
+        }
+        @keyframes logoShimmer {
+          0%   { background-position: -200% center; }
+          100% { background-position:  200% center; }
+        }
+      `}</style>
+
+      {/* ── AppBar ── */}
+      <AppBar
+        position="fixed"
+        elevation={0}
         sx={{
-          maxWidth: 1400,
-          width: "100%",
-          mx: "auto",
-          px: { xs: 2, md: 5 },
-          py: 1.2,
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          minHeight: "64px !important"
+          background: scrolled
+            ? "rgba(6,6,6,0.92)"
+            : "rgba(8,8,8,0.75)",
+          backdropFilter: "blur(22px)",
+          WebkitBackdropFilter: "blur(22px)",
+          borderBottom: scrolled
+            ? "1px solid rgba(255,255,255,0.1)"
+            : "1px solid rgba(255,255,255,0.05)",
+          boxShadow: scrolled
+            ? "0 8px 32px rgba(0,0,0,0.45)"
+            : "none",
+          transition: "background 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease",
+          top: 0,
+          zIndex: 1200,
         }}
       >
-        {/* Logo */}
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
-          <Box sx={{
-            width: 32, height: 32, borderRadius: "8px",
-            background: "linear-gradient(135deg, #fff 0%, #aaa 100%)",
-            display: "flex", alignItems: "center", justifyContent: "center"
-          }}>
-            <Box sx={{ width: 14, height: 14, borderRadius: "3px", background: "#080808" }} />
+        <Toolbar
+          sx={{
+            maxWidth: 1400,
+            width: "100%",
+            mx: "auto",
+            px: { xs: 2.5, md: 5 },
+            py: 1,
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            minHeight: "68px !important",
+          }}
+        >
+          {/* ── Logo ── */}
+          <Box
+            onClick={() => navigate("/")}
+            sx={{ display: "flex", alignItems: "center", gap: 1.5, cursor: "pointer" }}
+          >
+            <Box sx={{
+              width: 34, height: 34, borderRadius: "9px",
+              background: "linear-gradient(135deg, #ffffff 0%, #c0c0c0 100%)",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              boxShadow: "0 2px 12px rgba(255,255,255,0.15)",
+              flexShrink: 0,
+            }}>
+              <Box sx={{
+                width: 14, height: 14, borderRadius: "3px",
+                background: "#080808",
+              }} />
+            </Box>
+            <Box>
+              <Typography sx={{
+                fontFamily: "'Syne', sans-serif",
+                fontWeight: 800, fontSize: "1.18rem",
+                color: "#fff", letterSpacing: "-0.02em", lineHeight: 1,
+              }}>
+                STOREX
+              </Typography>
+              <Typography sx={{
+                fontFamily: "'DM Sans', sans-serif",
+                fontWeight: 400, fontSize: "0.58rem",
+                color: "rgba(255,255,255,0.35)", letterSpacing: "0.18em",
+                textTransform: "uppercase", lineHeight: 1, mt: 0.3,
+              }}>
+                Tech & Lifestyle
+              </Typography>
+            </Box>
           </Box>
+
+          {/* ── Nav links ── */}
+          <Box
+            component="nav"
+            sx={{
+              display: { xs: "none", md: "flex" },
+              alignItems: "center",
+              gap: { md: 3, lg: 4 },
+            }}
+          >
+            {navItems.map((item) => (
+              <NavLink
+                key={item.path}
+                to={item.path}
+                className={({ isActive }) => `nav-link${isActive ? " active" : ""}`}
+              >
+                {item.path === "/Misfavoritos" ? (
+                  <Box sx={{ display: "flex", alignItems: "center", gap: 0.6 }}>
+                    {item.label}
+                    {favoritos.length > 0 && (
+                      <Box sx={{
+                        display: "flex", alignItems: "center", gap: 0.3,
+                        background: "rgba(239,68,68,0.18)",
+                        border: "1px solid rgba(239,68,68,0.35)",
+                        borderRadius: "20px", px: 0.7, py: 0.15,
+                        animation: "favBadgePop 0.35s cubic-bezier(.22,.68,0,1.2)",
+                      }}>
+                        <FavoriteIcon sx={{ fontSize: 9, color: "#ef4444" }} />
+                        <Box component="span" sx={{
+                          fontSize: "0.6rem", fontWeight: 800,
+                          color: "#ef4444", lineHeight: 1,
+                          fontFamily: "'DM Sans', sans-serif",
+                        }}>
+                          {favoritos.length}
+                        </Box>
+                      </Box>
+                    )}
+                  </Box>
+                ) : item.label}
+              </NavLink>
+            ))}
+          </Box>
+
+          {/* ── Acciones ── */}
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+
+            {/* Carrito */}
+            <IconButton
+              onClick={() => navigate("/Carrito")}
+              sx={{
+                color: "rgba(255,255,255,0.7)",
+                border: "1px solid rgba(255,255,255,0.1)",
+                borderRadius: "10px", width: 40, height: 40,
+                transition: "all 0.22s ease",
+                "&:hover": {
+                  color: "#fff",
+                  borderColor: "rgba(255,255,255,0.35)",
+                  background: "rgba(255,255,255,0.07)",
+                  transform: "translateY(-1px)",
+                },
+              }}
+            >
+              <Badge
+                badgeContent={totalItems}
+                max={99}
+                sx={{
+                  "& .MuiBadge-badge": {
+                    background: "#fff",
+                    color: "#080808",
+                    fontFamily: "'DM Sans', sans-serif",
+                    fontWeight: 800,
+                    fontSize: "0.58rem",
+                    minWidth: 16, height: 16,
+                    padding: "0 4px",
+                    border: "1.5px solid rgba(8,8,8,0.9)",
+                    top: 2, right: 2,
+                  },
+                }}
+              >
+                <ShoppingBagOutlinedIcon sx={{ fontSize: 19 }} />
+              </Badge>
+            </IconButton>
+
+            {/* Divider decorativo */}
+            <Box sx={{
+              display: { xs: "none", md: "block" },
+              width: 1, height: 22,
+              background: "rgba(255,255,255,0.1)",
+              mx: 0.5,
+            }} />
+
+            {/* Menú móvil */}
+            <IconButton
+              onClick={() => setDrawerOpen(true)}
+              sx={{
+                display: { xs: "flex", md: "none" },
+                color: "rgba(255,255,255,0.7)",
+                border: "1px solid rgba(255,255,255,0.1)",
+                borderRadius: "10px", width: 40, height: 40,
+                transition: "all 0.22s ease",
+                "&:hover": {
+                  color: "#fff",
+                  borderColor: "rgba(255,255,255,0.35)",
+                  background: "rgba(255,255,255,0.07)",
+                },
+              }}
+            >
+              <MenuIcon sx={{ fontSize: 19 }} />
+            </IconButton>
+          </Box>
+        </Toolbar>
+      </AppBar>
+
+      {/* ── Drawer móvil ── */}
+      <Drawer
+        anchor="right"
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        PaperProps={{
+          sx: {
+            width: 280,
+            background: "rgba(8,8,8,0.97)",
+            backdropFilter: "blur(24px)",
+            borderLeft: "1px solid rgba(255,255,255,0.08)",
+            px: 2, py: 3,
+          },
+        }}
+      >
+        {/* Header del drawer */}
+        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 3, px: 1 }}>
           <Typography sx={{
-            fontFamily: "'Syne', sans-serif",
-            fontWeight: 800, fontSize: "1.15rem",
-            color: "#fff", letterSpacing: "-0.02em", lineHeight: 1
+            fontFamily: "'Syne', sans-serif", fontWeight: 800,
+            fontSize: "1.1rem", color: "#fff", letterSpacing: "-0.02em",
           }}>
             STOREX
           </Typography>
+          <IconButton
+            onClick={() => setDrawerOpen(false)}
+            sx={{ color: "rgba(255,255,255,0.5)", "&:hover": { color: "#fff" } }}
+          >
+            <CloseIcon sx={{ fontSize: 20 }} />
+          </IconButton>
         </Box>
 
-        {/* Nav links */}
-        <Box
-          component="nav"
-          sx={{ display: { xs: "none", md: "flex" }, alignItems: "center", gap: 4 }}
-        >
+        <Divider sx={{ borderColor: "rgba(255,255,255,0.07)", mb: 2 }} />
+
+        <List disablePadding>
           {navItems.map((item) => (
-            <NavLink
-              key={item.path}
-              to={item.path}
-              className={({ isActive }) => `nav-link${isActive ? " active" : ""}`}
-            >
-              {item.label}
-            </NavLink>
+            <ListItem key={item.path} disablePadding>
+              <ListItemButton
+                component={NavLink}
+                to={item.path}
+                className={({ isActive }) => `mobile-link${isActive ? " active" : ""}`}
+                onClick={() => setDrawerOpen(false)}
+                sx={{
+                  borderRadius: "10px", py: 1.4, px: 2, mb: 0.5,
+                  "&:hover": { background: "rgba(255,255,255,0.05)" },
+                  "&.active": { background: "rgba(255,255,255,0.08)" },
+                }}
+              >
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1, width: "100%" }}>
+                  <Box component="span" sx={{
+                    fontFamily: "'DM Sans', sans-serif", fontWeight: 500,
+                    fontSize: "0.92rem", letterSpacing: "0.05em",
+                    textTransform: "uppercase", color: "inherit",
+                  }}>
+                    {item.label}
+                  </Box>
+                  {item.path === "/Misfavoritos" && favoritos.length > 0 && (
+                    <Box sx={{
+                      display: "flex", alignItems: "center", gap: 0.3,
+                      background: "rgba(239,68,68,0.18)",
+                      border: "1px solid rgba(239,68,68,0.35)",
+                      borderRadius: "20px", px: 0.8, py: 0.2,
+                    }}>
+                      <FavoriteIcon sx={{ fontSize: 10, color: "#ef4444" }} />
+                      <Box component="span" sx={{
+                        fontSize: "0.65rem", fontWeight: 800,
+                        color: "#ef4444", fontFamily: "'DM Sans', sans-serif",
+                      }}>
+                        {favoritos.length}
+                      </Box>
+                    </Box>
+                  )}
+                  {item.path === "/Carrito" && totalItems > 0 && (
+                    <Box sx={{
+                      ml: "auto", background: "#fff", color: "#080808",
+                      borderRadius: "20px", px: 0.9, py: 0.1,
+                      fontSize: "0.65rem", fontWeight: 800,
+                      fontFamily: "'DM Sans', sans-serif",
+                    }}>
+                      {totalItems}
+                    </Box>
+                  )}
+                </Box>
+              </ListItemButton>
+            </ListItem>
           ))}
-        </Box>
+        </List>
 
-        {/* Acciones */}
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-          <IconButton sx={{
-            color: "rgba(255,255,255,0.7)",
-            border: "1px solid rgba(255,255,255,0.12)",
-            borderRadius: "10px", width: 40, height: 40,
+        <Divider sx={{ borderColor: "rgba(255,255,255,0.07)", mt: 2, mb: 3 }} />
+
+        {/* Botón carrito en drawer */}
+        <Box
+          onClick={() => { navigate("/Carrito"); setDrawerOpen(false); }}
+          sx={{
+            display: "flex", alignItems: "center", justifyContent: "space-between",
+            background: "rgba(255,255,255,0.06)",
+            border: "1px solid rgba(255,255,255,0.1)",
+            borderRadius: "12px", px: 2.5, py: 1.6, cursor: "pointer",
             transition: "all 0.2s ease",
-            "&:hover": { color: "#fff", borderColor: "rgba(255,255,255,0.4)", background: "rgba(255,255,255,0.06)" }
+            "&:hover": { background: "rgba(255,255,255,0.1)", borderColor: "rgba(255,255,255,0.2)" },
+          }}
+        >
+          <Typography sx={{
+            fontFamily: "'DM Sans', sans-serif", fontWeight: 600,
+            fontSize: "0.88rem", color: "#fff",
           }}>
-            <ShoppingBagOutlinedIcon sx={{ fontSize: 19 }} />
-          </IconButton>
-
-          <IconButton sx={{
-            display: { xs: "flex", md: "none" },
-            color: "rgba(255,255,255,0.7)",
-            border: "1px solid rgba(255,255,255,0.12)",
-            borderRadius: "10px", width: 40, height: 40,
-            transition: "all 0.2s ease",
-            "&:hover": { color: "#fff", borderColor: "rgba(255,255,255,0.4)", background: "rgba(255,255,255,0.06)" }
+            Ver carrito
+          </Typography>
+          <Badge badgeContent={totalItems} max={99} sx={{
+            "& .MuiBadge-badge": {
+              background: "#fff", color: "#080808",
+              fontWeight: 800, fontSize: "0.58rem",
+            },
           }}>
-            <MenuIcon sx={{ fontSize: 19 }} />
-          </IconButton>
+            <ShoppingBagOutlinedIcon sx={{ fontSize: 20, color: "rgba(255,255,255,0.7)" }} />
+          </Badge>
         </Box>
-      </Toolbar>
-    </AppBar>
+      </Drawer>
 
-    {/* ── Espaciador para que el contenido no quede debajo del header fijo ── */}
-    <Box sx={{ height: "64px" }} />
-  </>
-);
+      {/* ── Espaciador ── */}
+      <Box sx={{ height: "68px" }} />
+    </>
+  );
+};
 
 export default Header;
