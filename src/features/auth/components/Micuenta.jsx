@@ -60,8 +60,6 @@ const Micuenta = () => {
   return (
     <div className="cuenta-page">
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600;700;800&display=swap');
-
         @keyframes fadeUp {
           from { opacity: 0; transform: translateY(22px); }
           to   { opacity: 1; transform: translateY(0);    }
@@ -255,9 +253,36 @@ const Micuenta = () => {
         }
         @media (max-width: 560px) {
           .cuenta-page { padding: 40px 16px 60px; }
-          .cuenta-hero { padding: 24px 20px; }
+          .cuenta-hero { padding: 24px 20px; gap: 20px; }
           .cuenta-hero-stats { gap: 0; }
           .cuenta-stat { padding: 0 14px; }
+        }
+        @media (max-width: 600px) {
+          .cuenta-tabs {
+            width: 100%;
+            max-width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+          }
+          .cuenta-tabs::-webkit-scrollbar { display: none; }
+          .cuenta-tab { flex-shrink: 0; padding: 8px 14px; font-size: 0.78rem; }
+        }
+        @media (max-width: 400px) {
+          .cuenta-stat-num { font-size: 1.3rem; }
+          .cuenta-stat-label { font-size: 0.62rem; }
+          .cuenta-stat { padding: 0 10px; }
+          .cuenta-nombre { font-size: 1.4rem !important; }
+        }
+        @media (max-width: 520px) {
+          .pedido-row { flex-wrap: wrap; gap: 10px; padding: 14px 16px; }
+          .pedido-info { flex: 1 1 calc(100% - 68px); }
+          .carrito-item-subtotal, .pedido-precio { width: 100%; }
+        }
+        @media (max-width: 500px) {
+          .cuenta-card-header { padding: 16px 16px 12px; flex-wrap: wrap; gap: 8px; }
+          .perfil-campo { padding: 14px 16px; }
+          .side-item { padding: 12px 16px; }
         }
 
         /* ── Card genérica ── */

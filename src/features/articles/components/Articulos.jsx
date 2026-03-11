@@ -115,6 +115,7 @@ const Articulo = ({ nombre, precio, descripcion, imagen, badge, badgeColor, cate
       <button
         className={`articulo-fav${favAnim ? " fav-pop" : ""}${esFavorito ? " fav-active" : ""}`}
         onClick={handleFav}
+        aria-label={esFavorito ? `Quitar ${nombre} de favoritos` : `Agregar ${nombre} a favoritos`}
       >
         {esFavorito
           ? <FavoriteIcon style={{ fontSize: 18, color: "#ef4444" }} />
@@ -124,7 +125,7 @@ const Articulo = ({ nombre, precio, descripcion, imagen, badge, badgeColor, cate
 
       {/* Imagen con overlay */}
       <div className="articulo-img-wrap">
-        <img className="articulo-img" src={imagen} alt={nombre} />
+        <img className="articulo-img" src={imagen} alt={nombre} loading={index < 3 ? "eager" : "lazy"} />
         <div className="articulo-img-overlay" />
       </div>
 
@@ -166,8 +167,6 @@ const Articulos = () => {
   return (
     <div className="articulos-page">
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600;700;800&display=swap');
-
         @keyframes fadeUp {
           from { opacity: 0; transform: translateY(32px); }
           to   { opacity: 1; transform: translateY(0);    }
@@ -288,6 +287,25 @@ const Articulos = () => {
           color: #fff;
           box-shadow: 0 6px 20px rgba(0,0,0,0.25);
           transform: translateY(-2px);
+        }
+        @media (max-width: 500px) {
+          .articulos-filtros {
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            justify-content: flex-start;
+            margin-left: -16px;
+            margin-right: -16px;
+            padding-left: 16px;
+            padding-right: 16px;
+            padding-bottom: 8px;
+            margin-bottom: 40px;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+          }
+          .articulos-filtros::-webkit-scrollbar { display: none; }
+          .filtro-chip { flex-shrink: 0; }
+          .articulo-card { height: auto; min-height: 460px; }
+          .articulo-img-wrap { height: 180px; min-height: 180px; max-height: 180px; }
         }
 
         /* ── Grid ── */

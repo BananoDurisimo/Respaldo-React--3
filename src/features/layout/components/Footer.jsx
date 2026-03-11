@@ -61,8 +61,6 @@ const socials = [
 const Footer = () => (
   <>
     <style>{`
-      @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap');
-
       .footer-link {
         text-decoration: none;
         color: rgba(255,255,255,0.42);
@@ -118,9 +116,9 @@ const Footer = () => (
         }}
       >
         {/* ── Columna marca ── */}
-        <Box>
+        <Box sx={{ textAlign: { xs: "center", sm: "left" } }}>
           {/* Logo */}
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 2 }}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 2, justifyContent: { xs: "center", sm: "flex-start" } }}>
             <Box sx={{
               width: 32, height: 32, borderRadius: "8px",
               background: "linear-gradient(135deg, #fff 0%, #bbb 100%)",
@@ -142,13 +140,14 @@ const Footer = () => (
             fontFamily: "'DM Sans', sans-serif",
             fontSize: "0.85rem", color: "rgba(255,255,255,0.38)",
             lineHeight: 1.7, maxWidth: 280, mb: 3.5,
+            mx: { xs: "auto", sm: 0 },
           }}>
             Tu destino para tecnología y lifestyle. Productos cuidadosamente seleccionados
             para elevar tu día a día.
           </Typography>
 
           {/* Sociales */}
-          <Box sx={{ display: "flex", gap: 1 }}>
+          <Box sx={{ display: "flex", gap: 1, justifyContent: { xs: "center", sm: "flex-start" } }}>
             {socials.map((s) => (
               <a key={s.label} href={s.href} className="social-btn" aria-label={s.label}>
                 {s.icon}

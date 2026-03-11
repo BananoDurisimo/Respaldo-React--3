@@ -68,8 +68,6 @@ const Header = () => {
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap');
-
         .nav-link {
           position: relative;
           text-decoration: none;
@@ -266,6 +264,7 @@ const Header = () => {
             {/* Carrito */}
             <IconButton
               onClick={() => navigate("/Carrito")}
+              aria-label="Ver carrito"
               sx={{
                 color: "rgba(255,255,255,0.7)",
                 border: "1px solid rgba(255,255,255,0.1)",
@@ -303,6 +302,7 @@ const Header = () => {
             {/* Menú móvil */}
             <IconButton
               onClick={() => setDrawerOpen(true)}
+              aria-label="Abrir menú"
               sx={{
                 display: { xs: "flex", md: "none" },
                 color: "rgba(255,255,255,0.7)",
@@ -347,6 +347,7 @@ const Header = () => {
           </Typography>
           <IconButton
             onClick={() => setDrawerOpen(false)}
+            aria-label="Cerrar menú"
             sx={{ color: "rgba(255,255,255,0.5)", "&:hover": { color: "#fff" } }}
           >
             <CloseIcon sx={{ fontSize: 20 }} />
@@ -365,8 +366,9 @@ const Header = () => {
                 onClick={() => setDrawerOpen(false)}
                 sx={{
                   borderRadius: "10px", py: 1.4, px: 2, mb: 0.5,
-                  "&:hover": { background: "rgba(255,255,255,0.05)" },
-                  "&.active": { background: "rgba(255,255,255,0.08)" },
+                  color: "rgba(255,255,255,0.7)",
+                  "&:hover": { background: "rgba(255,255,255,0.05)", color: "#fff" },
+                  "&.active": { background: "rgba(255,255,255,0.08)", color: "#fff" },
                 }}
               >
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1, width: "100%" }}>

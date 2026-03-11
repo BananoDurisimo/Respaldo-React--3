@@ -88,8 +88,6 @@ const Carrito = () => {
   return (
     <div className="carrito-page">
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600;700;800&display=swap');
-
         @keyframes fadeUp {
           from { opacity: 0; transform: translateY(28px); }
           to   { opacity: 1; transform: translateY(0); }
@@ -368,6 +366,30 @@ const Carrito = () => {
           background: rgba(239,68,68,0.12);
           border-color: rgba(239,68,68,0.35);
           transform: scale(1.08);
+        }
+        @media (max-width: 640px) {
+          .carrito-item {
+            flex-wrap: wrap;
+            padding: 14px 16px;
+            gap: 10px;
+          }
+          .carrito-item-img {
+            flex: 0 0 52px;
+            width: 52px;
+            height: 52px;
+          }
+          .carrito-item-info {
+            flex: 1 1 calc(100% - 68px);
+          }
+          .carrito-item-subtotal {
+            flex: 1;
+            text-align: left;
+            align-self: center;
+          }
+          .carrito-item-qty,
+          .carrito-item-del {
+            flex-shrink: 0;
+          }
         }
 
         /* ── Resumen ── */

@@ -2,12 +2,11 @@ import React from "react";
 import { Box, Typography, Button } from "@mui/material";
 import { NavLink } from "react-router-dom";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import GitHubIcon from "@mui/icons-material/GitHub";
 
 const Content = () => (
   <>
     <style>{`
-      @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap');
-
       @keyframes fadeUp {
         from { opacity: 0; transform: translateY(28px); }
         to   { opacity: 1; transform: translateY(0);    }
@@ -197,7 +196,7 @@ const Content = () => (
       </Typography>
 
       {/* ── CTA ── */}
-      <Box className="hero-cta" sx={{ display: "flex", gap: 2, flexWrap: "wrap", justifyContent: "center" }}>
+      <Box className="hero-cta" sx={{ display: "flex", gap: 2, flexWrap: "wrap", justifyContent: "center", flexDirection: { xs: "column", sm: "row" }, alignItems: { xs: "stretch", sm: "center" }, width: { xs: "100%", sm: "auto" }, maxWidth: { xs: 360, sm: "none" }, px: { xs: 1, sm: 0 } }}>
         <Button
           component={NavLink}
           to="/Articulos"
@@ -252,6 +251,37 @@ const Content = () => (
           }}
         >
           Ver Ofertas
+        </Button>
+
+        <Button
+          component="a"
+          href="https://github.com/BananoDurisimo/Taller-N-3_React"
+          target="_blank"
+          rel="noopener noreferrer"
+          size="large"
+          startIcon={<GitHubIcon />}
+          sx={{
+            fontFamily: "'DM Sans', sans-serif",
+            color: "#080808",
+            background: "linear-gradient(135deg, #e2e8f0, #cbd5e1)",
+            border: "1px solid rgba(255,255,255,0.2)",
+            px: 4,
+            py: 1.6,
+            borderRadius: "12px",
+            textTransform: "none",
+            fontSize: "0.9rem",
+            fontWeight: 700,
+            letterSpacing: "0.01em",
+            boxShadow: "0 0 30px rgba(255,255,255,0.1)",
+            transition: "all 0.3s ease",
+            "&:hover": {
+              background: "linear-gradient(135deg, #fff, #e2e8f0)",
+              transform: "translateY(-3px)",
+              boxShadow: "0 12px 40px rgba(255,255,255,0.2)"
+            }
+          }}
+        >
+          Ver en GitHub
         </Button>
       </Box>
 
