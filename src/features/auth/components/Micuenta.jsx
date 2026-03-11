@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Avatar } from "@mui/material";
 import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
@@ -42,8 +43,19 @@ const pedidos = [
 const tabs = ["Resumen", "Pedidos", "Direcciones", "Pagos"];
 
 const Micuenta = () => {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("Resumen");
   const [editando, setEditando] = useState(false);
+
+  const sesion = JSON.parse(localStorage.getItem("storex_sesion") || "null");
+  const nombre = sesion?.nombre || "Invitado";
+  const email  = sesion?.email  || "";
+  const iniciales = nombre.split(" ").map(p => p[0]).join("").toUpperCase().slice(0, 2);
+
+  const handleLogout = () => {
+    localStorage.removeItem("storex_sesion");
+    navigate("/Login");
+  };
 
   return (
     <div className="cuenta-page">
@@ -462,14 +474,14 @@ const Micuenta = () => {
                 boxShadow: "0 4px 20px rgba(0,0,0,0.15)"
               }}
             >
-              VG
+              {iniciales}
             </Avatar>
             <div className="cuenta-online-dot" />
           </div>
 
           <div className="cuenta-info">
-            <h1 className="cuenta-nombre">Vicente Rios</h1>
-            <p className="cuenta-email">vicente.rios@correo.com</p>
+            <h1 className="cuenta-nombre">{nombre}</h1>
+            <p className="cuenta-email">{email}</p>
             <div className="cuenta-badges">
               <span className="cuenta-chip premium">⭐ Premium</span>
               <span className="cuenta-chip">Miembro desde 2024</span>
@@ -527,8 +539,8 @@ const Micuenta = () => {
               </div>
 
               {[
-                { label: "Nombre completo", valor: "Vicente Rios" },
-                { label: "Correo electrónico", valor: "vicente.rios@correo.com" },
+                { label: "Nombre completo", valor: nombre },
+                { label: "Correo electrónico", valor: email },
                 { label: "Teléfono", valor: "+57 310 456 7890" },
                 { label: "Ciudad", valor: "Medellín, Colombia" },
               ].map(({ label, valor }) => (
@@ -659,6 +671,7 @@ const Micuenta = () => {
                 e.currentTarget.style.background = "rgba(239,68,68,0.04)";
                 e.currentTarget.style.borderColor = "rgba(239,68,68,0.2)";
               }}
+              onClick={handleLogout}
             >
               <LogoutIcon sx={{ fontSize: 18 }} />
               Cerrar sesión

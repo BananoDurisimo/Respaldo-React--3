@@ -10,6 +10,8 @@ import Misfavoritos from './features/auth/components/Misfavoritos'
 import Carrito from './features/auth/components/Carrito'
 import { FavoritosProvider } from "./features/auth/hooks/FavoritosContext";
 import { CarritoProvider } from "./features/articles/hooks/CarritoContext";
+import Login  from './features/auth/components/Login'
+import Registro from './features/auth/components/Registro'
 
 function App() {
   return (
@@ -23,6 +25,8 @@ function App() {
         <Route path="/Ofertas" element={<Ofertas />} />
         <Route path="/Micuenta" element={<Micuenta />} />
         <Route path="/Misfavoritos" element={<Misfavoritos />} />
+        <Route path="/Login"   element={<Login />} />
+        <Route path="/Registro" element={<Registro />} />
         <Route path="/Carrito" element={<Carrito />} />
       </Routes>
       <Footer></Footer>

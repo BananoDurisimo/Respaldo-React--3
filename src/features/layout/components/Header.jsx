@@ -7,29 +7,62 @@ import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
 import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import FavoriteIcon from "@mui/icons-material/Favorite";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import { useCarrito } from "../../articles/hooks/CarritoContext";
 import { useFavoritos } from "../../auth/hooks/FavoritosContext";
 
-const navItems = [
-  { path: "/",             label: "Inicio"    },
-  { path: "/Articulos",    label: "Artículos" },
-  { path: "/Ofertas",      label: "Ofertas"   },
-  { path: "/Micuenta",     label: "Mi Cuenta" },
+const navItemsBase = [
+  { path: "/",          label: "Inicio"    },
+  { path: "/Articulos", label: "Artículos" },
+  { path: "/Ofertas",   label: "Ofertas"   },
+];
+const navItemsAuth = [
   { path: "/Misfavoritos", label: "Favoritos" },
+  { path: "/Micuenta",     label: "Mi Cuenta" },
+];
+const navItemsGuest = [
+  { path: "/Login",    label: "Login"    },
+  { path: "/Registro", label: "Registro" },
 ];
 
 const Header = () => {
   const { totalItems } = useCarrito();
   const { favoritos } = useFavoritos();
   const navigate = useNavigate();
+  const location = useLocation();
   const [scrolled, setScrolled] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [sesion, setSesion] = useState(() =>
+    JSON.parse(localStorage.getItem("storex_sesion") || "null")
+  );
+
+  // Re-sincronizar sesión cada vez que cambia la ruta (mismo tab)
+  useEffect(() => {
+    setSesion(JSON.parse(localStorage.getItem("storex_sesion") || "null"));
+  }, [location.pathname]);
+
+  const navItems = [
+    ...navItemsBase,
+    ...(sesion ? navItemsAuth : navItemsGuest),
+  ];
+
+  const handleLogout = () => {
+    localStorage.removeItem("storex_sesion");
+    setSesion(null);
+    navigate("/Login");
+  };
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  useEffect(() => {
+    const syncSesion = () =>
+      setSesion(JSON.parse(localStorage.getItem("storex_sesion") || "null"));
+    window.addEventListener("storage", syncSesion);
+    return () => window.removeEventListener("storage", syncSesion);
   }, []);
 
   return (
@@ -206,6 +239,30 @@ const Header = () => {
           {/* ── Acciones ── */}
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
 
+            {/* Saludo + logout (solo si hay sesión) */}
+            {sesion && (
+              <Box sx={{ display: { xs: "none", md: "flex" }, alignItems: "center", gap: 1 }}>
+                <Typography sx={{
+                  fontFamily: "'DM Sans', sans-serif", fontSize: "0.78rem",
+                  color: "rgba(255,255,255,0.45)", fontWeight: 500,
+                }}>
+                  Hola, {sesion.nombre}
+                </Typography>
+                <Box
+                  onClick={handleLogout}
+                  sx={{
+                    fontFamily: "'DM Sans', sans-serif", fontSize: "0.75rem",
+                    fontWeight: 600, color: "rgba(255,255,255,0.35)",
+                    cursor: "pointer", letterSpacing: "0.04em",
+                    "&:hover": { color: "#ef4444" },
+                    transition: "color 0.2s ease",
+                  }}
+                >
+                  Salir
+                </Box>
+              </Box>
+            )}
+
             {/* Carrito */}
             <IconButton
               onClick={() => navigate("/Carrito")}
@@ -242,14 +299,6 @@ const Header = () => {
                 <ShoppingBagOutlinedIcon sx={{ fontSize: 19 }} />
               </Badge>
             </IconButton>
-
-            {/* Divider decorativo */}
-            <Box sx={{
-              display: { xs: "none", md: "block" },
-              width: 1, height: 22,
-              background: "rgba(255,255,255,0.1)",
-              mx: 0.5,
-            }} />
 
             {/* Menú móvil */}
             <IconButton
